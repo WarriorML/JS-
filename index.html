@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				box-sizing: border-box;
+			}
+			html{
+				height: 100%;
+			}
+			body{
+				height: 100%;
+				margin: 0;
+			}
+			#nav{
+				width: 100%;
+				height: 60px;
+				background-color: blue;
+				position: relative;
+				font-size: 0;
+			}
+			#nav a{
+				text-decoration: none;
+				color: white;
+				line-height: 60px;
+				display: inline-block;
+				width: 120px;
+				border-right: 1px dashed white;
+				text-align: center;
+				font-size: 16px;
+			}
+			#line{
+				position: absolute;
+				bottom: 0;
+				display: inline-block;
+				width: 120px;
+				height: 5px;
+				background-color: red;
+				left: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="nav" class="nav">
+			<a href="#" class="now">首页</a>
+			<a href="#">导航标题2</a>
+			<a href="#">导航标题3</a>
+			<a href="#">导航标题4</a>
+			<a href="#">导航标题5</a>
+			<span id="line"></span>
+		</div>
+		<script type="text/javascript">
+			var navs = document.getElementsByTagName('a');
+			var line = document.getElementById('line');
+			//计时器
+			var timer = null;
+			//位置初始化，否则在第一次通过ele.style.left属性获取left的值时，是一个空值
+			line.style.left = 0;
+			for (var i = 0; i < navs.length; i++) {
+				//为每一个导航绑定鼠标移入事件
+				navs[i].onmouseover = function(){
+					//为了防止计时器的叠加，在开始新的运动之前需要先清除原有的计时器
+					if (timer) {
+						clearTimeout(timer);
+					}
+					//当鼠标移入时，获取当前位置和目标位置
+//					parseInt() 函数可解析一个字符串，并返回一个整数。
+					var startPos = parseInt(line.style.left);
+//					alert(startPos);
+					//offsetLeft 获取元素相对于父元素左侧的距离(绝对定位)
+					var targetPos = this.offsetLeft;
+//					alert(targetPos);
+					//调用运动功能函数（move）
+					move(startPos,targetPos);
+				}
+			}
+			//两个参数用于接收运动的起点和终点
+			function move(start,end){
+				//缓冲运动的核心
+				var step = (end - start)/10;
+				//根据起点与终点的不同进行取整
+				//进行缓冲运动（随着距离的缩短，每次运动的步长也有所变短），需要针对数字进行合理的取整处理
+				if (step>0) {
+					//向上取整
+					step = Math.ceil(step);
+				}else{
+					//向下取整
+					step = Math.floor(step);
+				}
+				
+				start = start + step;
+				line.style.left = start + 'px';
+				console.log(">>>>>>>>");
+				//判断运动是否已经到达终点，如果达到终点则停止运动，否则就继续调用计时器，再次执行move函数（与前一次move函数不同之处，在于参数值不同）
+				if (start == end) {
+					clearTimeout(timer);
+				}else{
+					timer = setTimeout(function(){
+						move(start,end);
+					},16)
+				}
+			}
+		</script>
+	</body>
+</html>
